@@ -18,6 +18,9 @@
         android:theme="@style/Theme.GasWrld"
         tools:targetApi="31">
         <activity
+            android:name=".RegisterScreen"
+            android:exported="false" />
+        <activity
             android:name=".ErrorScreen"
             android:exported="false"
             android:screenOrientation="portrait"

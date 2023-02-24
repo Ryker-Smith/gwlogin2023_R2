@@ -144,6 +144,9 @@ public boolean dispatchEvent(Component component, String componentName, String e
             if (component.equals(buttonl)) {
                 switchForm("GameScreen");
                     }
+            if (component.equals(buttonr)) {
+                switchForm("RegisterScreen");
+            }
                 }
     return false;
     }
