@@ -13,7 +13,7 @@ import com.google.appinventor.components.runtime.WebViewer;
 public class GameScreen extends Form implements HandlesEventDispatching {
     private
     Button up, down, left, right, eat, berserk, bag;
-    HorizontalArrangement padh, padh2;
+    HorizontalArrangement padh;
     VerticalArrangement Main;
     TableArrangement Table;
     WebViewer Gamescreen;
