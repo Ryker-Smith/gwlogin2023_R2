@@ -11,7 +11,7 @@ import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.DatePicker;
-import com.google.appinventor.components.runtime.Slider;
+//import com.google.appinventor.components.runtime.Slider;
 
 public class RegisterScreen extends Form implements HandlesEventDispatching {
     private
@@ -66,7 +66,8 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padv2.HeightPercent(10);
         padv2.BackgroundColor(COLOR_MAGENTA);
 
-        date = new Slider(Table);
+        date = new Slider(Main);
+        date.WidthPercent(100);
         date.ThumbEnabled(true);
         date.ThumbPosition(2023);
         date.Column(1);
@@ -76,11 +77,18 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         date.MinValue(1900);
         date.MaxValue(2023);
 
-
-
-
-
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
+    }
+    public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
+        System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
+        if (eventName.equals("BackPressed")) {
+            // this would be a great place to do something useful
+            return true;
+        }
+        else if (eventName.equals("Click")) {
+            return true;
+        }
+        return false;
     }
 }
