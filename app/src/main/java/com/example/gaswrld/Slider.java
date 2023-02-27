@@ -1,5 +1,7 @@
 package com.example.gaswrld;
 
+import static com.example.gaswrld.SdkLevel.LEVEL_LOLLIPOP;
+
 import android.R;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -109,7 +111,7 @@ public class Slider extends AndroidViewComponent implements SeekBar.OnSeekBarCha
     super(container);
     seekbar = new SeekBar(container.$context());
 
-    if (SdkLevel.getLevel() >= SdkLevel.LEVEL_LOLLIPOP) {
+    if (SdkLevel.getLevel() >= LEVEL_LOLLIPOP) {
       seekbar.setSplitTrack(false);
     }
 
