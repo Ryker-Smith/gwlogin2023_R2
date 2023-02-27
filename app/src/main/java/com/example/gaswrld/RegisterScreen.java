@@ -16,7 +16,7 @@ import com.google.appinventor.components.runtime.Slider;
 public class RegisterScreen extends Form implements HandlesEventDispatching {
     private
     Button buttonr;
-    HorizontalArrangement padh, padh2;
+    HorizontalArrangement padh, padh2, DateTable;
     VerticalArrangement Main, padv, padv2, padv3;
     Label Label;
     TextBox email, pass, datey, datem, dated;
@@ -66,21 +66,45 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padv2.HeightPercent(10);
         padv2.BackgroundColor(COLOR_MAGENTA);
 
-        date = new Slider(Table);
-        date.ThumbEnabled(true);
-        date.ThumbPosition(2023);
-        date.Column(1);
-        date.Row(5);
-        date.ColorLeft(COLOR_BLUE);
-        date.ColorRight(COLOR_RED);
-        date.MinValue(1900);
-        date.MaxValue(2023);
+        DateTable = new HorizontalArrangement(Table);
+        DateTable.Column(1);
+        DateTable.Row(5);
+
+        datey = new TextBox(DateTable);
+        datey.Column(1);
+        datey.Row(5);
+        datey.Width(95);
 
 
+        datem = new TextBox(DateTable);
+        datem.Column(1);
+        datem.Row(5);
+        datem.Width(75);
 
+        dated = new TextBox(DateTable);
+        dated.Column(1);
+        dated.Row(5);
+        dated.Width(75);
 
 
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
     }
+    public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
+        System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
+        if (eventName.equals("ScreenStart")) {
+        }
+        return false;
+        }
 }
+
+/////////////////////
+//date = new Slider(Table);
+//        date.ThumbEnabled(true);
+//        date.ThumbPosition(2023);
+//        date.Column(1);
+//        date.Row(5);
+//        date.ColorLeft(COLOR_BLUE);
+//        date.ColorRight(COLOR_RED);
+//        date.MinValue(1900);
+//        date.MaxValue(2200);
