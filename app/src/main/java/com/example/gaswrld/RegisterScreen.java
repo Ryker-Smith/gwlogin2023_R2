@@ -1,6 +1,7 @@
 package com.example.gaswrld;
 
 import com.google.appinventor.components.runtime.Button;
+import com.google.appinventor.components.runtime.Clock;
 import com.google.appinventor.components.runtime.Component;
 import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.Form;
@@ -20,12 +21,13 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     Button buttonr;
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, padv, padv2, padv3;
-    Label Label, datedata;
+    Label Label, datedata, errormsg;
     TextBox email;
     TableArrangement Table;
     Slider date;
     PasswordTextBox pass;
-    CheckBox box;
+    CheckBox box, boxl;
+    Clock tim;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -73,7 +75,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         date = new Slider(Table);
         date.WidthPercent(50);
         date.ThumbEnabled(true);
-        date.ThumbPosition(2023);
+        date.ThumbPosition(2000);
         date.Column(1);
         date.Row(5);
         date.ColorLeft(COLOR_BLUE);
@@ -93,7 +95,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         email.Row(7);
         email.FontSize(20);
         email.TextColor(COLOR_LTGRAY);
-        email.Hint("Your Email Here!");
+        email.Hint("My Email Here!");
         email.TextAlignment(ALIGNMENT_CENTER);
 
         pass = new PasswordTextBox(Table);
@@ -101,7 +103,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         pass.Row(8);
         pass.FontSize(20);
         pass.TextColor(COLOR_LTGRAY);
-        pass.Hint("Your Password Here!");
+        pass.Hint("My Password Here!");
         pass.TextAlignment(ALIGNMENT_CENTER);
 
 
@@ -112,12 +114,12 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         box.TextColor(COLOR_LTGRAY);
         box.FontSize(15);
 
-        box = new CheckBox(Table);
-        box.Column(1);
-        box.Row(10);
-        box.Text("I allow for marketting and update\n news to be sent to my email\n every day for the next 50 years");
-        box.TextColor(COLOR_LTGRAY);
-        box.FontSize(15);
+        boxl = new CheckBox(Table);
+        boxl.Column(1);
+        boxl.Row(10);
+        boxl.Text("I allow for marketting and update\n news to be sent to my email\n every day for the next 50 years");
+        boxl.TextColor(COLOR_LTGRAY);
+        boxl.FontSize(15);
 
         padv3 = new VerticalArrangement(Table);
         padv3.Column(1);
@@ -135,18 +137,17 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         buttonr.TextAlignment(ALIGNMENT_CENTER);
         buttonr.FontSize(25);
 
+        errormsg = new Label(padv3);
+        errormsg.Text("");
 
-
-
-
-        
-
-
+        tim = new Clock(this);
+        tim.TimerEnabled(false);
+        tim.TimerInterval(2000);
 
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
         EventDispatcher.registerEventForDelegation(this, formName, "PositionChanged");
-        EventDispatcher.registerEventForDelegation(this, formName, "Checked");
+        EventDispatcher.registerEventForDelegation(this, formName, "Timer");
     }
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
@@ -160,9 +161,38 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
             int y = (int) x;
             datedata.Text(("I were born in:") + String.valueOf(y));
         }
-        else if (eventName.equals("Checked")) {
-            if (component.equals(box));
-            box.Text("Ok Bye");
+        else if (eventName.equals("Click")) {
+            if (component.equals(buttonr)) {
+                 if (date.ThumbPosition() > 2004) {
+                    tim.TimerEnabled(true);
+                    errormsg.Text("Sorry, you are too young for this game!");
+                 }
+                else if (date.ThumbPosition() > 2023) {
+                     tim.TimerEnabled(true);
+                     errormsg.Text("You havent even been born yet!\n No way you can play this game.");
+                }
+                else if (date.ThumbPosition() < 2004) {
+                    if (email.Text().equals("")) {
+                        if (pass.Text().equals("")) {
+                            if (component.equals(box.Checked(true))){
+                                tim.TimerEnabled(true);
+                                errormsg.Text("Your account has been registered,\n you will receive a \nconfirmation email shortly!.");
+
+                            }
+
+                        }
+
+                    }
+
+                 }
+
+            }
+        }
+        else if (eventName.equals("Timer")) {
+            if (component.equals(tim));
+            tim.TimerEnabled(false);
+            finish();
+            startActivity(getIntent());
         }
         return false;
     }
