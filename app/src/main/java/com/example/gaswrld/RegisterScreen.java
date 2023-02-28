@@ -12,6 +12,8 @@ import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.DatePicker;
 //import com.google.appinventor.components.runtime.Slider;
+import com.google.appinventor.components.runtime.PasswordTextBox;
+import com.google.appinventor.components.runtime.CheckBox;
 
 public class RegisterScreen extends Form implements HandlesEventDispatching {
     private
@@ -19,9 +21,11 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, padv, padv2, padv3;
     Label Label, datedata;
-    TextBox email, pass, datey, datem, dated;
+    TextBox email;
     TableArrangement Table;
     Slider date;
+    PasswordTextBox pass;
+    CheckBox box;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -35,7 +39,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         Table = new TableArrangement(Main);
         Table.Columns(3);
-        Table.Rows(10);
+        Table.Rows(15);
 
         padh = new HorizontalArrangement(Table);
         padh.Column(1);
@@ -84,9 +88,65 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         datedata.Text("I were born in:....");
         datedata.FontSize(28);
 
+        email = new TextBox(Table);
+        email.Column(1);
+        email.Row(7);
+        email.FontSize(20);
+        email.TextColor(COLOR_LTGRAY);
+        email.Hint("Your Email Here!");
+        email.TextAlignment(ALIGNMENT_CENTER);
+
+        pass = new PasswordTextBox(Table);
+        pass.Column(1);
+        pass.Row(8);
+        pass.FontSize(20);
+        pass.TextColor(COLOR_LTGRAY);
+        pass.Hint("Your Password Here!");
+        pass.TextAlignment(ALIGNMENT_CENTER);
+
+
+        box = new CheckBox(Table);
+        box.Column(1);
+        box.Row(9);
+        box.Text("I promise that the \ninfo provided is 100% \ntrue and accurate.");
+        box.TextColor(COLOR_LTGRAY);
+        box.FontSize(15);
+
+        box = new CheckBox(Table);
+        box.Column(1);
+        box.Row(10);
+        box.Text("I allow for marketting and update\n news to be sent to my email\n every day for the next 50 years");
+        box.TextColor(COLOR_LTGRAY);
+        box.FontSize(15);
+
+        padv3 = new VerticalArrangement(Table);
+        padv3.Column(1);
+        padv3.Row(12);
+        padv3.WidthPercent(10);
+        padv3.HeightPercent(10);
+        padv3.BackgroundColor(Component.COLOR_CYAN);
+
+        buttonr = new Button(Table);
+        buttonr.Column(1);
+        buttonr.Row(13);
+        buttonr.Shape(BUTTON_SHAPE_ROUNDED);
+        buttonr.BackgroundColor(COLOR_LTGRAY);
+        buttonr.Text("Register!");
+        buttonr.TextAlignment(ALIGNMENT_CENTER);
+        buttonr.FontSize(25);
+
+
+
+
+
+        
+
+
+
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
         EventDispatcher.registerEventForDelegation(this, formName, "PositionChanged");
+        EventDispatcher.registerEventForDelegation(this, formName, "Checked");
     }
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
@@ -99,6 +159,10 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
             float x = date.ThumbPosition();
             int y = (int) x;
             datedata.Text(("I were born in:") + String.valueOf(y));
+        }
+        else if (eventName.equals("Checked")) {
+            if (component.equals(box));
+            box.Text("Ok Bye");
         }
         return false;
     }
