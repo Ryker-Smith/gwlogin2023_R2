@@ -18,7 +18,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     Button buttonr;
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, padv, padv2, padv3;
-    Label Label;
+    Label Label, datedata;
     TextBox email, pass, datey, datem, dated;
     TableArrangement Table;
     Slider date;
@@ -35,7 +35,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         Table = new TableArrangement(Main);
         Table.Columns(3);
-        Table.Rows(7);
+        Table.Rows(10);
 
         padh = new HorizontalArrangement(Table);
         padh.Column(1);
@@ -46,7 +46,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         padv = new VerticalArrangement(Table);
         padv.Column(0);
-        padv.Row(1);
+        padv.Row(5);
         padv.HeightPercent(5);
         padv.WidthPercent(20);
         padv.BackgroundColor(COLOR_ORANGE);
@@ -66,19 +66,27 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padv2.HeightPercent(10);
         padv2.BackgroundColor(COLOR_MAGENTA);
 
-        date = new Slider(Main);
-        date.WidthPercent(100);
+        date = new Slider(Table);
+        date.WidthPercent(50);
         date.ThumbEnabled(true);
         date.ThumbPosition(2023);
         date.Column(1);
         date.Row(5);
         date.ColorLeft(COLOR_BLUE);
         date.ColorRight(COLOR_RED);
-        date.MinValue(1900);
-        date.MaxValue(2023);
+        date.MinValue(1943);
+        date.MaxValue(2050);
+
+        datedata = new Label(Table);
+        datedata.Column(1);
+        datedata.Row(6);
+        datedata.TextColor(COLOR_LTGRAY);
+        datedata.Text("I were born in:....");
+        datedata.FontSize(28);
 
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
+        EventDispatcher.registerEventForDelegation(this, formName, "PositionChanged");
     }
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
@@ -86,8 +94,11 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
             // this would be a great place to do something useful
             return true;
         }
-        else if (eventName.equals("Click")) {
-            return true;
+        else if (eventName.equals("PositionChanged")) {
+            if (component.equals(date));
+            float x = date.ThumbPosition();
+            int y = (int) x;
+            datedata.Text(("I were born in:") + String.valueOf(y));
         }
         return false;
     }
