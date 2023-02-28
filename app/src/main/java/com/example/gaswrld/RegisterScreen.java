@@ -11,15 +11,13 @@ import com.google.appinventor.components.runtime.TextBox;
 import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
-import com.google.appinventor.components.runtime.DatePicker;
-//import com.google.appinventor.components.runtime.Slider;
 import com.google.appinventor.components.runtime.PasswordTextBox;
 import com.google.appinventor.components.runtime.CheckBox;
 
 public class RegisterScreen extends Form implements HandlesEventDispatching {
     private
     Button buttonr;
-    HorizontalArrangement padh, padh2;
+    HorizontalArrangement padh;
     VerticalArrangement Main, padv, padv2, padv3;
     Label Label, datedata, errormsg;
     TextBox email;
@@ -27,7 +25,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     Slider date;
     PasswordTextBox pass;
     CheckBox box, boxl;
-    Clock tim;
+    Clock tim, tim2;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -48,14 +46,14 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padh.Row(0);
         padh.HeightPercent(15);
         padh.WidthPercent(60);
-        padh.BackgroundColor(COLOR_GREEN);
+        padh.BackgroundColor(7);
 
         padv = new VerticalArrangement(Table);
         padv.Column(0);
         padv.Row(5);
         padv.HeightPercent(5);
         padv.WidthPercent(20);
-        padv.BackgroundColor(COLOR_ORANGE);
+        padv.BackgroundColor(7);
 
         Label = new Label(Table);
         Label.Column(1);
@@ -70,12 +68,11 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padv2.Row(3);
         padv2.WidthPercent(10);
         padv2.HeightPercent(10);
-        padv2.BackgroundColor(COLOR_MAGENTA);
+        padv2.BackgroundColor(7);
 
         date = new Slider(Table);
         date.WidthPercent(50);
         date.ThumbEnabled(true);
-        date.ThumbPosition(2000);
         date.Column(1);
         date.Row(5);
         date.ColorLeft(COLOR_BLUE);
@@ -106,7 +103,6 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         pass.Hint("My Password Here!");
         pass.TextAlignment(ALIGNMENT_CENTER);
 
-
         box = new CheckBox(Table);
         box.Column(1);
         box.Row(9);
@@ -126,7 +122,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         padv3.Row(12);
         padv3.WidthPercent(10);
         padv3.HeightPercent(10);
-        padv3.BackgroundColor(Component.COLOR_CYAN);
+        padv3.BackgroundColor(7);
 
         buttonr = new Button(Table);
         buttonr.Column(1);
@@ -144,56 +140,79 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         tim.TimerEnabled(false);
         tim.TimerInterval(2000);
 
+        tim2 = new Clock(this);
+        tim2.TimerEnabled(false);
+        tim2.TimerInterval(3000);
+
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
         EventDispatcher.registerEventForDelegation(this, formName, "PositionChanged");
         EventDispatcher.registerEventForDelegation(this, formName, "Timer");
     }
+
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
         if (eventName.equals("BackPressed")) {
             // this would be a great place to do something useful
             return true;
-        }
-        else if (eventName.equals("PositionChanged")) {
-            if (component.equals(date));
+        } else if (eventName.equals("PositionChanged")) {
             float x = date.ThumbPosition();
             int y = (int) x;
-            datedata.Text(("I were born in:") + String.valueOf(y));
-        }
-        else if (eventName.equals("Click")) {
+            datedata.Text(("I were born in:") + y);
+        } else if (eventName.equals("Click")) {
             if (component.equals(buttonr)) {
-                 if (date.ThumbPosition() > 2004) {
+                if (date.ThumbPosition() > 2004) {
                     tim.TimerEnabled(true);
                     errormsg.Text("Sorry, you are too young for this game!");
-                 }
-                else if (date.ThumbPosition() > 2023) {
-                     tim.TimerEnabled(true);
-                     errormsg.Text("You havent even been born yet!\n No way you can play this game.");
                 }
-                else if (date.ThumbPosition() < 2004) {
-                    if (email.Text().equals("")) {
-                        if (pass.Text().equals("")) {
-                            if (component.equals(box.Checked(true))){
-                                tim.TimerEnabled(true);
+                if (date.ThumbPosition() < 2004) {
+                    if (email.Text().contains("@")) {
+                        if (email.Text().length() > 8) {
+                            if (pass.Text().length() > 6) {
+                                tim2.TimerEnabled(true);
                                 errormsg.Text("Your account has been registered,\n you will receive a \nconfirmation email shortly!.");
-
+                            } else {
+                                tim.TimerEnabled(true);
+                                errormsg.Text("Enter a more secure password!");
                             }
-
+                        } else {
+                            tim.TimerEnabled(true);
+                            errormsg.Text("Your email address is too short!");
                         }
-
+                    } else {
+                        tim.TimerEnabled(true);
+                        errormsg.Text("Please enter a valid email address!");
                     }
-
-                 }
-
+                }
             }
-        }
-        else if (eventName.equals("Timer")) {
-            if (component.equals(tim));
-            tim.TimerEnabled(false);
-            finish();
-            startActivity(getIntent());
+        } else if (eventName.equals("Timer")) {
+            if (component.equals(tim)) {
+                tim.TimerEnabled(false);
+                finish();
+                startActivity(getIntent());
+            }
+            if (component.equals(tim2)) {
+                tim2.TimerEnabled(false);
+                switchForm("MainActivity");
+            }
         }
         return false;
     }
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
