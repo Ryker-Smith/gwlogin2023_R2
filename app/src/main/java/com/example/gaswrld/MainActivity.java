@@ -10,15 +10,20 @@ import com.google.appinventor.components.runtime.TextBox;
 import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
+import com.google.appinventor.components.runtime.Web;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends Form implements HandlesEventDispatching {
     private
-    Button buttonl, buttonb, buttonr;
+    Button buttonl, buttonr;
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, Vert, padv, padv2, padv3;
     Label Label;
     TextBox email, pass;
     TableArrangement Table, table2;
+    Web spooderweb;
+    JSONObject jsonCredentials=new JSONObject();
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -108,7 +113,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         Label = new Label(table2);
         Label.Column(1);
         Label.Row(7);
-        Label.Text("Dont currently\nhave an account?");
+        Label.Text("Don't currently\nhave an account?");
         Label.TextAlignment(ALIGNMENT_CENTER);
         Label.TextColor(COLOR_LTGRAY);
         Label.FontSize(22);
@@ -119,13 +124,6 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         buttonr.Text("Register");
         buttonr.Shape(BUTTON_SHAPE_ROUNDED);
         buttonr.BackgroundColor(Component.COLOR_DKGRAY);
-
-        buttonb = new Button(table2);
-        buttonb.Column(1);
-        buttonb.Row(9);
-        buttonb.Text("Back");
-        buttonb.Shape(BUTTON_SHAPE_ROUNDED);
-        buttonb.BackgroundColor(Component.COLOR_DKGRAY);
 
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
@@ -138,9 +136,6 @@ public boolean dispatchEvent(Component component, String componentName, String e
             return true;
         }
         else if (eventName.equals("Click")) {
-            if (component.equals(buttonb)) {
-                switchForm("SplashScreen");
-            }
             if (component.equals(buttonl)) {
                 switchForm("GameScreen");
                     }
