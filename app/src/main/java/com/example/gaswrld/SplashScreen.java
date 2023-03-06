@@ -13,8 +13,6 @@ public class SplashScreen extends Form implements HandlesEventDispatching {
 
     Clock timerNextScreen;
     VerticalArrangement SplashScreen;
-    Image ourLogo;
-    Label spacer;
     int thisIsA_Bad_Idea_SettingTheLogoSizeLikeThis = 320;
     int another_Bad_Idea_SettingTheTimerThisWay = 500;
 

@@ -11,6 +11,7 @@ import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.Web;
+import com.google.appinventor.components.runtime.Clock;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,11 +20,12 @@ public class MainActivity extends Form implements HandlesEventDispatching {
     Button buttonl, buttonr;
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, Vert, padv, padv2, padv3;
-    Label Label;
+    Label Label, statsus;
     TextBox email, pass;
     TableArrangement Table, table2;
-    Web spooderweb;
-    JSONObject jsonCredentials=new JSONObject();
+    Web authweb;
+    JSONObject sndstff = new JSONObject();
+    Clock tim;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -110,6 +112,11 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         padv3.HeightPercent(10);
         padv3.WidthPercent(2);
 
+        statsus = new Label(padv3);
+        statsus.TextAlignment(ALIGNMENT_CENTER);
+        statsus.TextColor(COLOR_LTGRAY);
+        statsus.FontSize(26);
+
         Label = new Label(table2);
         Label.Column(1);
         Label.Row(7);
@@ -125,24 +132,78 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         buttonr.Shape(BUTTON_SHAPE_ROUNDED);
         buttonr.BackgroundColor(Component.COLOR_DKGRAY);
 
+        authweb = new Web(this);
+        authweb.Url(AppOptions.authenticationURL);
+
+        tim = new Clock(this);
+        tim.TimerEnabled(false);
+        tim.TimerInterval(2000);
+
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
+        EventDispatcher.registerEventForDelegation(this, formName, "GotText");
+        EventDispatcher.registerEventForDelegation(this, formName, "Timer");
+
     }
 
-public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
+    public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
         if (eventName.equals("BackPressed")) {
             // this would be a great place to do something useful
             return true;
-        }
-        else if (eventName.equals("Click")) {
+        } else if (eventName.equals("Click")) {
             if (component.equals(buttonl)) {
-                switchForm("GameScreen");
-                    }
-            if (component.equals(buttonr)) {
-                switchForm("RegisterScreen");
-            }
+                statsus.Text(UI_Responses.CONNECTION_SENDING);
+                //buttonl.Enabled(false);
+                System.err.print("You pressed a button");
+                try {
+                    sndstff.put("action", "login");
+                    sndstff.put("user", email.Text());
+                    sndstff.put("password", pass.Text());
+                    String msg = sndstff.toString();
+                    authweb.PostText(msg);
+                } catch (Exception e) {
+                    return false;
                 }
-    return false;
+                return true;
+            }
+        }
+        if (component.equals(buttonr)) {
+            switchForm("RegisterScreen");
+        } else if (eventName.equals("GotText")) {
+            if (component.equals(authweb)) {
+                String status = params[1].toString();
+                String textOfResponse = (String) params[3];
+                if (textOfResponse.equals("")) {
+                    textOfResponse = status;
+                }
+                if (status.equals("200")) {
+                    tim.TimerEnabled(true);
+                    try {
+                        JSONObject parser = new JSONObject(textOfResponse);
+                        if (parser.getString("status").equals("error")) {
+                            statsus.Text(parser.getString("detail"));
+                            buttonl.Enabled(true);
+                        } else {
+                            String token = parser.getString("token");
+                            statsus.Text("Login Successful!");
+                        }
+                    } catch (JSONException e) {
+                        statsus.Text("error e177 processing response");
+                        buttonl.Enabled(true);
+                    }
+                } else {
+                    statsus.Text("error e182 processing response" + status);
+                    buttonl.Enabled(true);
+                }
+            }
+        } else if (eventName.equals("Timer")) {
+            if (component.equals(tim)) {
+                switchForm("GameScreen");
+                tim.TimerEnabled(false);
+            }
+        }
+        return false;
     }
 }
+
