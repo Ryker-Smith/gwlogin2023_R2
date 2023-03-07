@@ -1,19 +1,19 @@
 package com.example.gaswrld;
 
+import android.annotation.SuppressLint;
+
 import com.google.appinventor.components.runtime.Clock;
 import com.google.appinventor.components.runtime.Component;
 import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.Form;
 import com.google.appinventor.components.runtime.HandlesEventDispatching;
-import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.VerticalArrangement;
-import com.google.appinventor.components.runtime.Image;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashScreen extends Form implements HandlesEventDispatching {
 
     Clock timerNextScreen;
     VerticalArrangement SplashScreen;
-    int thisIsA_Bad_Idea_SettingTheLogoSizeLikeThis = 320;
     int another_Bad_Idea_SettingTheTimerThisWay = 500;
 
     protected void $define() {

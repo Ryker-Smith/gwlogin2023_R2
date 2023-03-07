@@ -11,8 +11,6 @@ import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.Clock;
 
 public class ErrorScreen extends Form implements HandlesEventDispatching {
-    private
-    HorizontalArrangement padh, padh2;
     VerticalArrangement Main;
     Label Label;
     TableArrangement Table;
@@ -33,14 +31,14 @@ public class ErrorScreen extends Form implements HandlesEventDispatching {
         Table.HeightPercent(LENGTH_FILL_PARENT);
         Table.WidthPercent(LENGTH_FILL_PARENT);
 
-        padh = new HorizontalArrangement(Table);
+        HorizontalArrangement padh = new HorizontalArrangement(Table);
         padh.Row(0);
         padh.Column(1);
         padh.HeightPercent(55);
         padh.WidthPercent(10);
         padh.BackgroundColor(COLOR_BLUE);
 
-        padh2 = new HorizontalArrangement(Table);
+        HorizontalArrangement padh2 = new HorizontalArrangement(Table);
         padh2.Row(3);
         padh2.Column(0);
         padh2.HeightPercent(10);
@@ -67,22 +65,25 @@ public class ErrorScreen extends Form implements HandlesEventDispatching {
 
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
-        if (eventName.equals("BackPressed")) {
-            getStartValue();
-            // this would be a great place to do something useful
+        switch (eventName) {
+            case "BackPressed":
+                getStartValue();
+                // this would be a great place to do something useful
 
-            return true;
-        } else if (eventName.equals("ScreenStart")) {
-            if (getStartValue().equals(19)) {
-                Label.Text("The register function does not yet work, sorry for the inconvenience!");
-            }
+                return true;
+            case "ScreenStart":
+                if (getStartValue().equals(19)) {
+                    Label.Text("The register function does not yet work, sorry for the inconvenience!");
+                }
 
-        } else if (eventName.equals("Timer")) {
-            if (component.equals(Clock)) {
+                break;
+            case "Timer":
+                if (component.equals(Clock)) {
 
-                switchForm("MainActivity");
-                Clock.TimerEnabled(false);
-            }
+                    switchForm("MainActivity");
+                    Clock.TimerEnabled(false);
+                }
+                break;
         }
         return false;
     }

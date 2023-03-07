@@ -16,6 +16,9 @@
         android:theme="@style/Theme.GasWrld"
         tools:targetApi="31">
         <activity
+            android:name=".BAP"
+            android:exported="false" />
+        <activity
             android:name=".AppOptions"
             android:exported="false" />
         <activity

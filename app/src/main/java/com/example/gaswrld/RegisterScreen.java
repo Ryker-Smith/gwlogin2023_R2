@@ -13,6 +13,10 @@ import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.PasswordTextBox;
 import com.google.appinventor.components.runtime.CheckBox;
+import com.google.appinventor.components.runtime.Web;
+import com.google.appinventor.components.runtime.Notifier;
+
+import org.json.JSONObject;
 
 public class RegisterScreen extends Form implements HandlesEventDispatching {
     private
@@ -26,6 +30,11 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     PasswordTextBox pass;
     CheckBox box, boxl;
     Clock tim, tim2;
+    Web authweb, authwebjr;
+    JSONObject jsonCredentials = new JSONObject();
+    Notifier PopUpAd;
+
+    int Year;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -84,7 +93,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         datedata.Column(1);
         datedata.Row(6);
         datedata.TextColor(COLOR_LTGRAY);
-        datedata.Text("I were born in:....");
+        datedata.Text("I were born in:"+" ....");
         datedata.FontSize(28);
 
         email = new TextBox(Table);
@@ -135,6 +144,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         errormsg = new Label(padv3);
         errormsg.Text("");
+        errormsg.TextColor(COLOR_LTGRAY);
 
         tim = new Clock(this);
         tim.TimerEnabled(false);
@@ -144,10 +154,20 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         tim2.TimerEnabled(false);
         tim2.TimerInterval(3000);
 
+        authweb = new Web(this);
+        authweb.Url(AppOptions.authenticationURL);
+        authwebjr = new Web(this);
+        authwebjr.Url(AppOptions.authenticationURL);
+
+        PopUpAd = new Notifier(this);
+        PopUpAd.BackgroundColor(Component.COLOR_DKGRAY);
+        PopUpAd.TextColor(COLOR_LTGRAY);
+
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
         EventDispatcher.registerEventForDelegation(this, formName, "PositionChanged");
         EventDispatcher.registerEventForDelegation(this, formName, "Timer");
+        EventDispatcher.registerEventForDelegation(this, formName, "GotText");
     }
 
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
@@ -159,7 +179,9 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
             float x = date.ThumbPosition();
             int y = (int) x;
             datedata.Text(("I were born in:") + y);
-        } else if (eventName.equals("Click")) {
+            int Year = (int) y;
+        }
+        else if (eventName.equals("Click")) {
             if (component.equals(buttonr)) {
                 if (date.ThumbPosition() > 2004) {
                     tim.TimerEnabled(true);
@@ -169,27 +191,128 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                     if (email.Text().contains("@")) {
                         if (email.Text().length() > 8) {
                             if (pass.Text().length() > 6) {
-                                tim2.TimerEnabled(true);
-                                errormsg.Text("Your account has been registered,\n you will receive a \nconfirmation email shortly!.");
-                            } else {
+                                errormsg.Text(UI_Responses.CHECKING);
+                                if (BAP.isValidEmailAddress(email.Text())) {
+                                    try {
+                                        jsonCredentials.put("action", "validate");
+                                        jsonCredentials.put("user", email.Text());
+                                        System.err.print("Sending: " + jsonCredentials.toString());
+                                        String msg = jsonCredentials.toString();
+                                        authweb.PostText(msg);
+                                        errormsg.Text("Details have been sent!\nPlease wait a moment...");
+                                    } catch (Exception e) {
+                                        return false;
+                                    }
+                                } else {
+                                    PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
+                                }
+                            }
+                            else {
                                 tim.TimerEnabled(true);
                                 errormsg.Text("Enter a more secure password!");
                             }
-                        } else {
+                        }
+                        else {
                             tim.TimerEnabled(true);
                             errormsg.Text("Your email address is too short!");
                         }
-                    } else {
+                    }
+                    else {
                         tim.TimerEnabled(true);
-                        errormsg.Text("Please enter a valid email address!");
+                        errormsg.Text("Please enter a valid email!");
+                    }
+                }else {
+                    tim.TimerEnabled(true);
+                    errormsg.Text("Please enter a valid year of birth!");
+                }
+            }
+        }
+        else if (eventName.equals("GotText")) {
+            if (component.equals(authweb)) {
+                String status = params[1].toString();
+                String textOfResponse = (String) params[3];
+                if (textOfResponse.equals("")) {
+                    textOfResponse = status;
+                }
+                if (status.equals("200")) {
+                    try {
+                        JSONObject parser = new JSONObject(textOfResponse);
+                        if (parser.getString("status").equals("OK")) {
+                            String result = parser.getString("user");
+                            if(result.contentEquals("exists")){
+                                PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
+                                errormsg.Text(UI_Responses.REGISTER);
+                            }
+                            else {
+                                // can create user
+                                try {
+                                    jsonCredentials.put("action", "register");
+                                    jsonCredentials.put("user", email.Text());
+                                    jsonCredentials.put("password",pass.Text());
+                                    jsonCredentials.put("fullname","tf2RedSoldier");
+                                    jsonCredentials.put("yob",  );
+                                    System.err.print("Registering: "+jsonCredentials.toString());
+                                    String msg=jsonCredentials.toString() ;
+                                    errormsg.Text(UI_Responses.WAITING);
+                                    authweb.PostText(msg);
+                                }
+                                catch (Exception e) {
+                                    return false;
+                                }
+                            }
+                        }
+                        else {
+                            btnRegister.Text(parser.getString("status"));
+                            btnRegister.Enabled(true);
+                        }
+                    }
+                    catch (JSONException e) {
+                        btnRegister.Text("error connecting " + status);
+                        btnRegister.Enabled(true);
+                    }
+                }
+                else {
+                    btnRegister.Text("error connecting " + status);
+                    btnRegister.Enabled(true);
+                }
+                return true;
+            }
+            else  if (component.equals(authwebjr)) {
+                String status = params[1].toString();
+                String textOfResponse = (String) params[3];
+                btnRegister.Text(UI_Responses.REGISTER);
+                if (status.equals("200")) {
+                    try {
+                        JSONObject parser = new JSONObject(textOfResponse);
+                        if (parser.getString("status").equals("OK")) {
+                            String result = parser.getString("userid");
+                            if (Integer.parseInt(result)>0) {
+                                announce.ShowAlert(UI_Responses.HAPPY_WOOHOO);
+                                padBottom.Text(UI_Responses.HAPPY_WOOHOO);
+                                btnRegister.Enabled(false);
+                                btnRegister.Text(UI_Responses.SUCCESS);
+                                btnRegister.TextColor(colors.MAIN_BACKGROUND);
+                                btnRegister.BackgroundColor(colors.MAIN_BACKGROUND);
+                                usernameBox.Enabled(false);
+                                passwordBox.Enabled(false);
+                                rnBox.Enabled(false);
+                                bornBox.Enabled(false);
+                                return true;
+                            }
+                        }
+                    }
+                    catch (JSONException e){
+                        btnRegister.Enabled(true);
+                        return true;
                     }
                 }
             }
-        } else if (eventName.equals("Timer")) {
+        }
+        else if (eventName.equals("Timer")) {
             if (component.equals(tim)) {
                 tim.TimerEnabled(false);
-                finish();
-                startActivity(getIntent());
+                //finish();
+                //startActivity(getIntent());
             }
             if (component.equals(tim2)) {
                 tim2.TimerEnabled(false);
@@ -199,7 +322,6 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         return false;
     }
 }
-
 //
 //
 //

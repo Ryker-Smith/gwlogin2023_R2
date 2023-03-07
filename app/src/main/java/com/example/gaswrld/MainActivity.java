@@ -12,6 +12,7 @@ import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.Web;
 import com.google.appinventor.components.runtime.Notifier;
+import com.google.appinventor.components.runtime.PasswordTextBox;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,7 +22,8 @@ public class MainActivity extends Form implements HandlesEventDispatching {
     HorizontalArrangement padh, padh2;
     VerticalArrangement Main, Vert, padv, padv2, padv3;
     Label Label, statsus;
-    TextBox email, pass;
+    TextBox email;
+    PasswordTextBox pass;
     TableArrangement Table, table2;
     Web authweb;
     JSONObject sndstff = new JSONObject();
@@ -93,7 +95,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         email.Hint("Email here");
         email.TextColor(COLOR_LTGRAY);
 
-        pass = new TextBox(table2);
+        pass = new PasswordTextBox(table2);
         pass.Column(1);
         pass.Row(4);
         pass.Hint("Password here");
@@ -201,7 +203,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                             }
                         }
                         else {
-                            String token = parser.getString("token");
+                            //String token = parser.getString("token");
                             statsus.Text("Login Successful!");
                             switchForm("GameScreen");
                         }
