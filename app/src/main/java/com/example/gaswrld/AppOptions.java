@@ -11,8 +11,8 @@ import com.google.appinventor.components.runtime.TinyDB;
 public class AppOptions{
 
     public static final String authenticationURL = "https://grassworld.fachtnaroe.net/auth/";
-    public static final String testEmail="krzysztof.noj22@student.tcfe.ie";
-    public static final String testpass="trans13nt";
+    //public static final String testEmail="krzysztof.noj22@student.tcfe.ie";
+    //public static final String testpass="trans13nt";
     public static final boolean TESTING=true;
     public static final String URL_MAIN="https://grassworld.fachtnaroe.net/";
     public static final Integer SplashTimeOut=1000;

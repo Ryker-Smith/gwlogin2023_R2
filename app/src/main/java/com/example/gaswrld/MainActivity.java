@@ -11,7 +11,7 @@ import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.Label;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.Web;
-import com.google.appinventor.components.runtime.Clock;
+import com.google.appinventor.components.runtime.Notifier;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +25,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
     TableArrangement Table, table2;
     Web authweb;
     JSONObject sndstff = new JSONObject();
-    Clock tim;
+    Notifier PopUpAd;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -109,7 +109,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         padv3.Column(1);
         padv3.Row(6);
         padv3.BackgroundColor(7);
-        padv3.HeightPercent(10);
+        padv3.HeightPercent(14);
         padv3.WidthPercent(2);
 
         statsus = new Label(padv3);
@@ -135,14 +135,13 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         authweb = new Web(this);
         authweb.Url(AppOptions.authenticationURL);
 
-        tim = new Clock(this);
-        tim.TimerEnabled(false);
-        tim.TimerInterval(2000);
+        PopUpAd = new Notifier(this);
+        PopUpAd.BackgroundColor(Component.COLOR_DKGRAY);
+        PopUpAd.TextColor(COLOR_LTGRAY);
 
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
         EventDispatcher.registerEventForDelegation(this, formName, "ScreenStart");
         EventDispatcher.registerEventForDelegation(this, formName, "GotText");
-        EventDispatcher.registerEventForDelegation(this, formName, "Timer");
 
     }
 
@@ -151,26 +150,36 @@ public class MainActivity extends Form implements HandlesEventDispatching {
         if (eventName.equals("BackPressed")) {
             // this would be a great place to do something useful
             return true;
-        } else if (eventName.equals("Click")) {
+        }
+        else if (eventName.equals("Click")) {
             if (component.equals(buttonl)) {
-                statsus.Text(UI_Responses.CONNECTION_SENDING);
-                //buttonl.Enabled(false);
-                System.err.print("You pressed a button");
-                try {
-                    sndstff.put("action", "login");
-                    sndstff.put("user", email.Text());
-                    sndstff.put("password", pass.Text());
-                    String msg = sndstff.toString();
-                    authweb.PostText(msg);
-                } catch (Exception e) {
-                    return false;
+                if (email.Text().length() < 4 ) {
+                    PopUpAd.ShowChooseDialog("Enter valid email", "Alert", "Ok", "", false);
                 }
-                return true;
+                if (pass.Text().length() < 5 ) {
+                    PopUpAd.ShowChooseDialog("Enter correct password", "Alert", "Ok", "", false);
+                }
+                else {
+                    statsus.Text(UI_Responses.CONNECTION_SENDING);
+                    //buttonl.Enabled(false);
+                    System.err.print("You pressed a button");
+                    try {
+                        sndstff.put("action", "login");
+                        sndstff.put("user", email.Text());
+                        sndstff.put("password", pass.Text());
+                        String msg = sndstff.toString();
+                        authweb.PostText(msg);
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    return true;
+                }
             }
         }
         if (component.equals(buttonr)) {
             switchForm("RegisterScreen");
-        } else if (eventName.equals("GotText")) {
+        }
+        else if (eventName.equals("GotText")) {
             if (component.equals(authweb)) {
                 String status = params[1].toString();
                 String textOfResponse = (String) params[3];
@@ -178,32 +187,54 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                     textOfResponse = status;
                 }
                 if (status.equals("200")) {
-                    tim.TimerEnabled(true);
+
                     try {
                         JSONObject parser = new JSONObject(textOfResponse);
                         if (parser.getString("status").equals("error")) {
                             statsus.Text(parser.getString("detail"));
                             buttonl.Enabled(true);
-                        } else {
+                            if (parser.getString("detail").equals("bad login")) {
+                                statsus.Text("Incorrect Password Entered");
+                            }
+                            if (parser.getString("detail").equals("unknown")) {
+                                statsus.Text("Incorrect Email Entered");
+                            }
+                        }
+                        else {
                             String token = parser.getString("token");
                             statsus.Text("Login Successful!");
+                            switchForm("GameScreen");
                         }
-                    } catch (JSONException e) {
+                    }
+                    catch (JSONException e) {
                         statsus.Text("error e177 processing response");
                         buttonl.Enabled(true);
                     }
-                } else {
+                }
+                else {
                     statsus.Text("error e182 processing response" + status);
                     buttonl.Enabled(true);
                 }
-            }
-        } else if (eventName.equals("Timer")) {
-            if (component.equals(tim)) {
-                switchForm("GameScreen");
-                tim.TimerEnabled(false);
             }
         }
         return false;
     }
 }
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
