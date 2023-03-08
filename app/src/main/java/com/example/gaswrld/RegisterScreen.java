@@ -83,6 +83,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         date.ThumbEnabled(true);
         date.Column(1);
         date.Row(5);
+        date.
         date.ColorLeft(COLOR_BLUE);
         date.ColorRight(COLOR_RED);
         date.MinValue(1943);
