@@ -16,6 +16,7 @@ import com.google.appinventor.components.runtime.CheckBox;
 import com.google.appinventor.components.runtime.Web;
 import com.google.appinventor.components.runtime.Notifier;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegisterScreen extends Form implements HandlesEventDispatching {
@@ -23,8 +24,8 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     Button buttonr;
     HorizontalArrangement padh;
     VerticalArrangement Main, padv, padv2, padv3;
-    Label Label, datedata, errormsg;
-    TextBox email;
+    Label Label, datedata, errormsg, datenr;
+    TextBox email, nme;
     TableArrangement Table;
     Slider date;
     PasswordTextBox pass;
@@ -33,8 +34,6 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     Web authweb, authwebjr;
     JSONObject jsonCredentials = new JSONObject();
     Notifier PopUpAd;
-
-    int Year;
 
     protected void $define() {
         this.Sizing("Responsive");
@@ -48,7 +47,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         Table = new TableArrangement(Main);
         Table.Columns(3);
-        Table.Rows(15);
+        Table.Rows(17);
 
         padh = new HorizontalArrangement(Table);
         padh.Column(1);
@@ -89,6 +88,9 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         date.MinValue(1943);
         date.MaxValue(2050);
 
+        datenr = new Label(this);
+        datenr.Visible(false);
+
         datedata = new Label(Table);
         datedata.Column(1);
         datedata.Row(6);
@@ -112,16 +114,24 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         pass.Hint("My Password Here!");
         pass.TextAlignment(ALIGNMENT_CENTER);
 
+        nme = new TextBox(Table);
+        nme.Column(1);
+        nme.Row(9);
+        nme.FontSize(20);
+        nme.TextColor(COLOR_LTGRAY);
+        nme.Hint("My Name Here!");
+        nme.TextAlignment(ALIGNMENT_CENTER);
+
         box = new CheckBox(Table);
         box.Column(1);
-        box.Row(9);
+        box.Row(10);
         box.Text("I promise that the \ninfo provided is 100% \ntrue and accurate.");
         box.TextColor(COLOR_LTGRAY);
         box.FontSize(15);
 
         boxl = new CheckBox(Table);
         boxl.Column(1);
-        boxl.Row(10);
+        boxl.Row(11);
         boxl.Text("I allow for marketting and update\n news to be sent to my email\n every day for the next 50 years");
         boxl.TextColor(COLOR_LTGRAY);
         boxl.FontSize(15);
@@ -135,7 +145,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         buttonr = new Button(Table);
         buttonr.Column(1);
-        buttonr.Row(13);
+        buttonr.Row(14);
         buttonr.Shape(BUTTON_SHAPE_ROUNDED);
         buttonr.BackgroundColor(COLOR_LTGRAY);
         buttonr.Text("Register!");
@@ -173,15 +183,14 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
         if (eventName.equals("BackPressed")) {
-            // this would be a great place to do something useful
+            //this would be a great place to do something useful
             return true;
         } else if (eventName.equals("PositionChanged")) {
             float x = date.ThumbPosition();
             int y = (int) x;
             datedata.Text(("I were born in:") + y);
-            int Year = (int) y;
-        }
-        else if (eventName.equals("Click")) {
+            datenr.Text(String.valueOf(y));
+        } else if (eventName.equals("Click")) {
             if (component.equals(buttonr)) {
                 if (date.ThumbPosition() > 2004) {
                     tim.TimerEnabled(true);
@@ -206,28 +215,24 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                 } else {
                                     PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
                                 }
-                            }
-                            else {
+                            } else {
                                 tim.TimerEnabled(true);
                                 errormsg.Text("Enter a more secure password!");
                             }
-                        }
-                        else {
+                        } else {
                             tim.TimerEnabled(true);
                             errormsg.Text("Your email address is too short!");
                         }
-                    }
-                    else {
+                    } else {
                         tim.TimerEnabled(true);
                         errormsg.Text("Please enter a valid email!");
                     }
-                }else {
+                } else {
                     tim.TimerEnabled(true);
                     errormsg.Text("Please enter a valid year of birth!");
                 }
             }
-        }
-        else if (eventName.equals("GotText")) {
+        } else if (eventName.equals("GotText")) {
             if (component.equals(authweb)) {
                 String status = params[1].toString();
                 String textOfResponse = (String) params[3];
@@ -239,70 +244,51 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                         JSONObject parser = new JSONObject(textOfResponse);
                         if (parser.getString("status").equals("OK")) {
                             String result = parser.getString("user");
-                            if(result.contentEquals("exists")){
+                            if (result.contentEquals("exists")) {
                                 PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
                                 errormsg.Text(UI_Responses.REGISTER);
-                            }
-                            else {
-                                // can create user
+                            } else {
+                                //can create user
                                 try {
                                     jsonCredentials.put("action", "register");
                                     jsonCredentials.put("user", email.Text());
-                                    jsonCredentials.put("password",pass.Text());
-                                    jsonCredentials.put("fullname","tf2RedSoldier");
-                                    jsonCredentials.put("yob",  );
-                                    System.err.print("Registering: "+jsonCredentials.toString());
-                                    String msg=jsonCredentials.toString() ;
+                                    jsonCredentials.put("password", pass.Text());
+                                    jsonCredentials.put("fullname", nme.Text());
+                                    jsonCredentials.put("yob", datenr.Text());
+                                    System.err.print("Registering: " + jsonCredentials.toString());
+                                    String msg = jsonCredentials.toString();
                                     errormsg.Text(UI_Responses.WAITING);
                                     authweb.PostText(msg);
-                                }
-                                catch (Exception e) {
+                                } catch (Exception e) {
                                     return false;
                                 }
                             }
+                        } else {
+                            errormsg.Text(parser.getString("status"));
                         }
-                        else {
-                            btnRegister.Text(parser.getString("status"));
-                            btnRegister.Enabled(true);
-                        }
+                    } catch (JSONException e) {
+                        errormsg.Text("error connecting1 " + status);
                     }
-                    catch (JSONException e) {
-                        btnRegister.Text("error connecting " + status);
-                        btnRegister.Enabled(true);
-                    }
-                }
-                else {
-                    btnRegister.Text("error connecting " + status);
-                    btnRegister.Enabled(true);
+                } else {
+                    errormsg.Text("error connecting2 " + status);
                 }
                 return true;
-            }
-            else  if (component.equals(authwebjr)) {
+            } else if (component.equals(authwebjr)) {
                 String status = params[1].toString();
                 String textOfResponse = (String) params[3];
-                btnRegister.Text(UI_Responses.REGISTER);
                 if (status.equals("200")) {
                     try {
                         JSONObject parser = new JSONObject(textOfResponse);
                         if (parser.getString("status").equals("OK")) {
                             String result = parser.getString("userid");
-                            if (Integer.parseInt(result)>0) {
-                                announce.ShowAlert(UI_Responses.HAPPY_WOOHOO);
-                                padBottom.Text(UI_Responses.HAPPY_WOOHOO);
-                                btnRegister.Enabled(false);
-                                btnRegister.Text(UI_Responses.SUCCESS);
-                                btnRegister.TextColor(colors.MAIN_BACKGROUND);
-                                btnRegister.BackgroundColor(colors.MAIN_BACKGROUND);
-                                usernameBox.Enabled(false);
-                                passwordBox.Enabled(false);
-                                rnBox.Enabled(false);
-                                bornBox.Enabled(false);
+                            if (Integer.parseInt(result) > 0) {
+                                PopUpAd.ShowAlert(UI_Responses.HAPPY_WOOHOO);
+                                errormsg.Text(UI_Responses.SUCCESS);
+                                tim2.TimerEnabled(true);
                                 return true;
                             }
                         }
-                    }
-                    catch (JSONException e){
-                        btnRegister.Enabled(true);
+                    } catch (JSONException e) {
                         return true;
                     }
                 }
@@ -322,19 +308,18 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         return false;
     }
 }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
