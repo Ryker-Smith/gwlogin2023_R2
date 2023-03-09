@@ -185,12 +185,14 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         if (eventName.equals("BackPressed")) {
             //this would be a great place to do something useful
             return true;
-        } else if (eventName.equals("PositionChanged")) {
+        }
+        else if (eventName.equals("PositionChanged")) {
             float x = date.ThumbPosition();
             int y = (int) x;
             datedata.Text(("I were born in:") + y);
             datenr.Text(String.valueOf(y));
-        } else if (eventName.equals("Click")) {
+        }
+        else if (eventName.equals("Click")) {
             if (component.equals(buttonr)) {
                 if (date.ThumbPosition() > 2004) {
                     tim.TimerEnabled(true);
@@ -209,30 +211,37 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                         String msg = jsonCredentials.toString();
                                         authweb.PostText(msg);
                                         errormsg.Text("Details have been sent!\nPlease wait a moment...");
-                                    } catch (Exception e) {
+                                    }
+                                    catch (Exception e) {
                                         return false;
                                     }
-                                } else {
+                                }
+                                else {
                                     PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
                                 }
-                            } else {
+                            }
+                            else {
                                 tim.TimerEnabled(true);
                                 errormsg.Text("Enter a more secure password!");
                             }
-                        } else {
+                        }
+                        else {
                             tim.TimerEnabled(true);
                             errormsg.Text("Your email address is too short!");
                         }
-                    } else {
+                    }
+                    else {
                         tim.TimerEnabled(true);
                         errormsg.Text("Please enter a valid email!");
                     }
-                } else {
+                }
+                else {
                     tim.TimerEnabled(true);
                     errormsg.Text("Please enter a valid year of birth!");
                 }
             }
-        } else if (eventName.equals("GotText")) {
+        }
+        else if (eventName.equals("GotText")) {
             if (component.equals(authweb)) {
                 String status = params[1].toString();
                 String textOfResponse = (String) params[3];
@@ -247,7 +256,8 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                             if (result.contentEquals("exists")) {
                                 PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
                                 errormsg.Text(UI_Responses.REGISTER);
-                            } else {
+                            }
+                            else {
                                 //can create user
                                 try {
                                     jsonCredentials.put("action", "register");
@@ -259,21 +269,26 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                     String msg = jsonCredentials.toString();
                                     errormsg.Text(UI_Responses.WAITING);
                                     authweb.PostText(msg);
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e) {
                                     return false;
                                 }
                             }
-                        } else {
+                        }
+                        else {
                             errormsg.Text(parser.getString("status"));
                         }
-                    } catch (JSONException e) {
+                    }
+                    catch (JSONException e) {
                         errormsg.Text("error connecting1 " + status);
                     }
-                } else {
+                }
+                else {
                     errormsg.Text("error connecting2 " + status);
                 }
                 return true;
-            } else if (component.equals(authwebjr)) {
+            }
+            else if (component.equals(authwebjr)) {
                 String status = params[1].toString();
                 String textOfResponse = (String) params[3];
                 if (status.equals("200")) {
@@ -288,7 +303,8 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                 return true;
                             }
                         }
-                    } catch (JSONException e) {
+                    }
+                    catch (JSONException e) {
                         return true;
                     }
                 }
@@ -308,18 +324,3 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         return false;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
