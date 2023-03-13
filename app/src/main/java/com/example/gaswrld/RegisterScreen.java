@@ -189,16 +189,16 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         else if (eventName.equals("PositionChanged")) {
             float x = date.ThumbPosition();
             int y = (int) x;
-            datedata.Text(("I were born in:") + y);
+            datedata.Text(("I was born in:") + y);
             datenr.Text(String.valueOf(y));
         }
         else if (eventName.equals("Click")) {
             if (component.equals(buttonr)) {
-                if (date.ThumbPosition() > 2004) {
+                if (date.ThumbPosition() >= 2004) {
                     tim.TimerEnabled(true);
                     errormsg.Text("Sorry, you are too young for this game!");
                 }
-                if (date.ThumbPosition() < 2004) {
+                else if (date.ThumbPosition() < 2004) {
                     if (email.Text().contains("@")) {
                         if (email.Text().length() > 8) {
                             if (pass.Text().length() > 6) {

@@ -16,6 +16,7 @@ public class AppOptions{
     public static final boolean TESTING=true;
     public static final String URL_MAIN="https://grassworld.fachtnaroe.net/";
     public static final Integer SplashTimeOut=1000;
+    public static Integer doitagainTicker_interval=100;
     // the buildNumber can be generated automatically. Look in build.gradle to see how
     public final String buildNumber=Integer.toString(BuildConfig.VERSION_CODE);
     //    public final String versionName=BuildConfig.VERSION_NAME;
