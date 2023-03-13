@@ -14,7 +14,7 @@ import com.google.appinventor.components.runtime.Label;
 
 public class GameScreen extends Form implements HandlesEventDispatching {
     private
-    Button up, down, left, right, eat, berserk, bag, sleepwake;
+    Button up, down, left, right, eat, berserk, bag, sleep, wake;
     HorizontalArrangement padh;
     VerticalArrangement Main;
     GrassViewer GrassViewer;
@@ -137,15 +137,25 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         bag.TextAlignment(ALIGNMENT_CENTER);
         bag.FontSize(30);
 
-        sleepwake = new Button(Table);
-        sleepwake.Shape(BUTTON_SHAPE_OVAL);
-        sleepwake.Column(2);
-        sleepwake.Row(1);
-        sleepwake.Width(60);
-        sleepwake.Height(60);
-        sleepwake.Text("\uD83D\uDE2A");
-        sleepwake.TextAlignment(ALIGNMENT_CENTER);
-        sleepwake.FontSize(30);
+        sleep = new Button(Table);
+        sleep.Shape(BUTTON_SHAPE_OVAL);
+        sleep.Column(2);
+        sleep.Row(1);
+        sleep.Width(60);
+        sleep.Height(60);
+        sleep.Text("\uD83D\uDE2A");
+        sleep.TextAlignment(ALIGNMENT_CENTER);
+        sleep.FontSize(30);
+
+        wake = new Button(Table);
+        wake.Shape(BUTTON_SHAPE_OVAL);
+        wake.Column(2);
+        wake.Row(3);
+        wake.Width(60);
+        wake.Height(60);
+        wake.Text("\uD83E\uDDE8");
+        wake.TextAlignment(ALIGNMENT_CENTER);
+        wake.FontSize(30);
 
         sleepwakeCheck = new Label(Main);
         sleepwakeCheck.Visible(false);
@@ -231,28 +241,35 @@ public class GameScreen extends Form implements HandlesEventDispatching {
             }
             else if (component.equals(eat)) {
                 System.err.print("key_right");
-                doitagain_key="key_right";
+                doitagain_key="key_E";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
             else if (component.equals(berserk)) {
                 System.err.print("key_right");
-                doitagain_key="key_M";
+                doitagain_key="key_G";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
             else if (component.equals(bag)) {
                 System.err.print("key_right");
-                doitagain_key="key_right";
+                doitagain_key="key_M";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
-            else if (component.equals(sleepwake)) {
+            else if (component.equals(sleep)) {
                 System.err.print("key_sleepwake");
                 doitagain_key="key_S";
+                GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                doitagain.TimerEnabled(true);
+                return true;
+            }
+            else if (component.equals(wake)) {
+                System.err.print("key_sleepwake");
+                doitagain_key="key_W";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
