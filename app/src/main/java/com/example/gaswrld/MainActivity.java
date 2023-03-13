@@ -171,6 +171,7 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                         sndstff.put("password", pass.Text());
                         String msg = sndstff.toString();
                         authweb.PostText(msg);
+                        email.HideKeyboard();
                     } catch (Exception e) {
                         return false;
                     }

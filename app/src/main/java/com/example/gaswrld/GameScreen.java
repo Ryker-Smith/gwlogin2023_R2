@@ -7,22 +7,25 @@ import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.Form;
 import com.google.appinventor.components.runtime.HandlesEventDispatching;
 import com.google.appinventor.components.runtime.HorizontalArrangement;
+import com.google.appinventor.components.runtime.Notifier;
 import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.TableArrangement;
 import com.google.appinventor.components.runtime.WebViewer;
 import com.google.appinventor.components.runtime.Label;
 
+
 public class GameScreen extends Form implements HandlesEventDispatching {
     private
-    Button up, down, left, right, eat, berserk, bag, sleep, wake;
+    Button up, down, left, right, eat, berserk, bag, sleep, wake, explode, muv;
     HorizontalArrangement padh;
-    VerticalArrangement Main;
+    VerticalArrangement Main, tableback;
     GrassViewer GrassViewer;
     TableArrangement Table;
     WebViewer Gamescreen;
     String token, doitagain_key;
     Clock doitagain;
     Label sleepwakeCheck;
+    Notifier PopUpAd;
 
 
     protected void $define() {
@@ -39,11 +42,17 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         GrassViewer.HeightPercent(75);
         GrassViewer.GoToUrl("https://grassworld.fachtnaroe.net");
 
-        Table = new TableArrangement(Main);
+        tableback = new VerticalArrangement(Main);
+        tableback.Image("controlsbkgnd.png");
+        tableback.WidthPercent(100);
+        tableback.HeightPercent(Component.LENGTH_FILL_PARENT);
+
+        Table = new TableArrangement(tableback);
         Table.Rows(5);
         Table.Columns(8);
         Table.WidthPercent(100);
         Table.HeightPercent(Component.LENGTH_FILL_PARENT);
+
         //here be controls
         padh = new HorizontalArrangement(Table);
         padh.Row(0);
@@ -153,9 +162,29 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         wake.Row(3);
         wake.Width(60);
         wake.Height(60);
-        wake.Text("\uD83E\uDDE8");
+        wake.Text("\uD83D\uDE2B");
         wake.TextAlignment(ALIGNMENT_CENTER);
         wake.FontSize(30);
+
+        explode = new Button(Table);
+        explode.Shape(BUTTON_SHAPE_OVAL);
+        explode.Column(1);
+        explode.Row(3);
+        explode.Width(60);
+        explode.Height(60);
+        explode.Text("\uD83E\uDDE8");
+        explode.TextAlignment(ALIGNMENT_CENTER);
+        explode.FontSize(30);
+
+        muv = new Button(Table);
+        muv.Shape(BUTTON_SHAPE_OVAL);
+        muv.Column(3);
+        muv.Row(1);
+        muv.Width(60);
+        muv.Height(60);
+        muv.Text("\uD83C\uDFC3");
+        muv.TextAlignment(ALIGNMENT_CENTER);
+        muv.FontSize(30);
 
         sleepwakeCheck = new Label(Main);
         sleepwakeCheck.Visible(false);
@@ -171,6 +200,10 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         doitagain = new Clock(Main);
         doitagain.TimerInterval(AppOptions.doitagainTicker_interval);
         doitagain.TimerEnabled(false);
+
+        PopUpAd = new Notifier(this);
+        PopUpAd.BackgroundColor(Component.COLOR_DKGRAY);
+        PopUpAd.TextColor(COLOR_LTGRAY);
 
         EventDispatcher.registerEventForDelegation(this, formName, "BackPressed");
         EventDispatcher.registerEventForDelegation(this, formName, "Click");
@@ -240,39 +273,55 @@ public class GameScreen extends Form implements HandlesEventDispatching {
                 return true;
             }
             else if (component.equals(eat)) {
-                System.err.print("key_right");
+                System.err.print("key_omnomnom");
                 doitagain_key="key_E";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
             else if (component.equals(berserk)) {
-                System.err.print("key_right");
+                System.err.print("key_ANGY");
                 doitagain_key="key_G";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
-            else if (component.equals(bag)) {
-                System.err.print("key_right");
+            else if (component.equals(muv)) {
+                System.err.print("key_muv");
                 doitagain_key="key_M";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
             else if (component.equals(sleep)) {
-                System.err.print("key_sleepwake");
+                System.err.print("key_sleep");
                 doitagain_key="key_S";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
             }
             else if (component.equals(wake)) {
-                System.err.print("key_sleepwake");
+                System.err.print("key_wake");
                 doitagain_key="key_W";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
+            }
+            else if (component.equals(bag)) {
+                PopUpAd.ShowAlert("dis dont work yet, be patient!");
+                System.err.print("key_bag");
+                //doitagain_key="key_M";
+                //GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                //doitagain.TimerEnabled(true);
+                //return true;
+            }
+            else if (component.equals(explode)) {
+                PopUpAd.ShowAlert("KHAAAAA-BEEEEWM");
+                System.err.print("key_BOOMBA");
+                //doitagain_key="key_M";
+                //GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                //doitagain.TimerEnabled(true);
+                //return true;
             }
         }
         else if (eventName.equals("TouchUp")) {
