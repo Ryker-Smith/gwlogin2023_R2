@@ -157,9 +157,11 @@ public class MainActivity extends Form implements HandlesEventDispatching {
             if (component.equals(buttonl)) {
                 if (email.Text().length() < 4 ) {
                     PopUpAd.ShowChooseDialog("Enter valid email", "Alert", "Ok", "", false);
+                    return true;
                 }
                 if (pass.Text().length() < 5 ) {
                     PopUpAd.ShowChooseDialog("Enter correct password", "Alert", "Ok", "", false);
+                    return true;
                 }
                 else {
                     statsus.Text(UI_Responses.CONNECTION_SENDING);
