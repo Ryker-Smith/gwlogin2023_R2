@@ -10,7 +10,6 @@ import com.google.appinventor.components.runtime.HorizontalArrangement;
 import com.google.appinventor.components.runtime.Notifier;
 import com.google.appinventor.components.runtime.VerticalArrangement;
 import com.google.appinventor.components.runtime.TableArrangement;
-import com.google.appinventor.components.runtime.WebViewer;
 import com.google.appinventor.components.runtime.Label;
 
 
@@ -21,7 +20,6 @@ public class GameScreen extends Form implements HandlesEventDispatching {
     VerticalArrangement Main, tableback;
     GrassViewer GrassViewer;
     TableArrangement Table;
-    WebViewer Gamescreen;
     String token, doitagain_key;
     Clock doitagain;
     Label sleepwakeCheck;
@@ -308,7 +306,7 @@ public class GameScreen extends Form implements HandlesEventDispatching {
                 return true;
             }
             else if (component.equals(bag)) {
-                PopUpAd.ShowAlert("dis dont work yet, be patient!");
+                PopUpAd.ShowAlert("dis don't work yet, be patient!");
                 System.err.print("key_bag");
                 //doitagain_key="key_M";
                 //GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
