@@ -210,7 +210,7 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         EventDispatcher.registerEventForDelegation(this, formName, "Timer");
         EventDispatcher.registerEventForDelegation(this, formName, "wvq_fromGame");
         EventDispatcher.registerEventForDelegation(this, formName, "wvq_fromGame_clear");
-        // for the movement keys
+        /// for the movement keys
         EventDispatcher.registerEventForDelegation(this, formName, "TouchDown");
         EventDispatcher.registerEventForDelegation(this, formName, "TouchUp");
 
