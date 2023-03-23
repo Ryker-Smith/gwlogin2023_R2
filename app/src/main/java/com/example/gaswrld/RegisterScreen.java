@@ -183,144 +183,129 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
         System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
-        if (eventName.equals("BackPressed")) {
-            //this would be a great place to do something useful
-            return true;
-        }
-        else if (eventName.equals("PositionChanged")) {
-            float x = date.ThumbPosition();
-            int y = (int) x;
-            datedata.Text(("I was born in:") + y);
-            datenr.Text(String.valueOf(y));
-        }
-        else if (eventName.equals("Click")) {
-            if (component.equals(buttonr)) {
-                if (date.ThumbPosition() >= 2004) {
-                    tim.TimerEnabled(true);
-                    errormsg.Text("Sorry, you are too young for this game!");
-                }
-                else if (date.ThumbPosition() < 2004) {
-                    if (email.Text().contains("@")) {
-                        if (email.Text().length() > 8) {
-                            if (pass.Text().length() > 6) {
-                                errormsg.Text(UI_Responses.CHECKING);
-                                if (BAP.isValidEmailAddress(email.Text())) {
-                                    try {
-                                        jsonCredentials.put("action", "validate");
-                                        jsonCredentials.put("user", email.Text());
-                                        System.err.print("Sending: " + jsonCredentials.toString());
-                                        String msg = jsonCredentials.toString();
-                                        authweb.PostText(msg);
-                                        errormsg.Text("Details have been sent!\nPlease wait a moment...");
+        switch (eventName) {
+            case "BackPressed":
+                //this would be a great place to do something useful
+                return true;
+            case "PositionChanged":
+                float x = date.ThumbPosition();
+                int y = (int) x;
+                datedata.Text(("I was born in:") + y);
+                datenr.Text(String.valueOf(y));
+                break;
+            case "Click":
+                if (component.equals(buttonr)) {
+                    if (date.ThumbPosition() >= 2004) {
+                        tim.TimerEnabled(true);
+                        errormsg.Text("Sorry, you are too young for this game!");
+                    } else if (date.ThumbPosition() < 2004) {
+                        if (email.Text().contains("@")) {
+                            if (email.Text().length() > 8) {
+                                if (pass.Text().length() > 6) {
+                                    errormsg.Text(UI_Responses.CHECKING);
+                                    if (BAP.isValidEmailAddress(email.Text())) {
+                                        try {
+                                            jsonCredentials.put("action", "validate");
+                                            jsonCredentials.put("user", email.Text());
+                                            System.err.print("Sending: " + jsonCredentials.toString());
+                                            String msg = jsonCredentials.toString();
+                                            authweb.PostText(msg);
+                                            errormsg.Text("Details have been sent!\nPlease wait a moment...");
+                                        } catch (Exception e) {
+                                            return false;
+                                        }
+                                    } else {
+                                        PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
                                     }
-                                    catch (Exception e) {
+                                } else {
+                                    tim.TimerEnabled(true);
+                                    errormsg.Text("Enter a more secure password!");
+                                }
+                            } else {
+                                tim.TimerEnabled(true);
+                                errormsg.Text("Your email address is too short!");
+                            }
+                        } else {
+                            tim.TimerEnabled(true);
+                            errormsg.Text("Please enter a valid email!");
+                        }
+                    } else {
+                        tim.TimerEnabled(true);
+                        errormsg.Text("Please enter a valid year of birth!");
+                    }
+                }
+                break;
+            case "GotText":
+                if (component.equals(authweb)) {
+                    String status = params[1].toString();
+                    String textOfResponse = (String) params[3];
+                    if (textOfResponse.equals("")) {
+                        textOfResponse = status;
+                    }
+                    if (status.equals("200")) {
+                        try {
+                            JSONObject parser = new JSONObject(textOfResponse);
+                            if (parser.getString("status").equals("OK")) {
+                                String result = parser.getString("user");
+                                if (result.contentEquals("exists")) {
+                                    PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
+                                    errormsg.Text(UI_Responses.REGISTER);
+                                } else {
+                                    //can create user
+                                    try {
+                                        jsonCredentials.put("action", "register");
+                                        jsonCredentials.put("user", email.Text());
+                                        jsonCredentials.put("password", pass.Text());
+                                        jsonCredentials.put("fullname", nme.Text());
+                                        jsonCredentials.put("yob", datenr.Text());
+                                        System.err.print("Registering: " + jsonCredentials.toString());
+                                        String msg = jsonCredentials.toString();
+                                        errormsg.Text(UI_Responses.WAITING);
+                                        authweb.PostText(msg);
+                                    } catch (Exception e) {
                                         return false;
                                     }
                                 }
-                                else {
-                                    PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
+                            } else {
+                                errormsg.Text(parser.getString("status"));
+                            }
+                        } catch (JSONException e) {
+                            errormsg.Text("error connecting1 " + status);
+                        }
+                    } else {
+                        errormsg.Text("error connecting2 " + status);
+                    }
+                    return true;
+                } else if (component.equals(authwebjr)) {
+                    String status = params[1].toString();
+                    String textOfResponse = (String) params[3];
+                    if (status.equals("200")) {
+                        try {
+                            JSONObject parser = new JSONObject(textOfResponse);
+                            if (parser.getString("status").equals("OK")) {
+                                String result = parser.getString("userid");
+                                if (Integer.parseInt(result) > 0) {
+                                    PopUpAd.ShowAlert(UI_Responses.HAPPY_WOOHOO);
+                                    errormsg.Text(UI_Responses.SUCCESS);
+                                    tim2.TimerEnabled(true);
+                                    return true;
                                 }
                             }
-                            else {
-                                tim.TimerEnabled(true);
-                                errormsg.Text("Enter a more secure password!");
-                            }
-                        }
-                        else {
-                            tim.TimerEnabled(true);
-                            errormsg.Text("Your email address is too short!");
+                        } catch (JSONException e) {
+                            return true;
                         }
                     }
-                    else {
-                        tim.TimerEnabled(true);
-                        errormsg.Text("Please enter a valid email!");
-                    }
                 }
-                else {
-                    tim.TimerEnabled(true);
-                    errormsg.Text("Please enter a valid year of birth!");
+                break;
+            case "Timer":
+                if (component.equals(tim)) {
+                    tim.TimerEnabled(false);
                 }
-            }
-        }
-        else if (eventName.equals("GotText")) {
-            if (component.equals(authweb)) {
-                String status = params[1].toString();
-                String textOfResponse = (String) params[3];
-                if (textOfResponse.equals("")) {
-                    textOfResponse = status;
+                if (component.equals(tim2)) {
+                    tim2.TimerEnabled(false);
+                    switchForm("MainActivity");
                 }
-                if (status.equals("200")) {
-                    try {
-                        JSONObject parser = new JSONObject(textOfResponse);
-                        if (parser.getString("status").equals("OK")) {
-                            String result = parser.getString("user");
-                            if (result.contentEquals("exists")) {
-                                PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
-                                errormsg.Text(UI_Responses.REGISTER);
-                            }
-                            else {
-                                //can create user
-                                try {
-                                    jsonCredentials.put("action", "register");
-                                    jsonCredentials.put("user", email.Text());
-                                    jsonCredentials.put("password", pass.Text());
-                                    jsonCredentials.put("fullname", nme.Text());
-                                    jsonCredentials.put("yob", datenr.Text());
-                                    System.err.print("Registering: " + jsonCredentials.toString());
-                                    String msg = jsonCredentials.toString();
-                                    errormsg.Text(UI_Responses.WAITING);
-                                    authweb.PostText(msg);
-                                }
-                                catch (Exception e) {
-                                    return false;
-                                }
-                            }
-                        }
-                        else {
-                            errormsg.Text(parser.getString("status"));
-                        }
-                    }
-                    catch (JSONException e) {
-                        errormsg.Text("error connecting1 " + status);
-                    }
-                }
-                else {
-                    errormsg.Text("error connecting2 " + status);
-                }
-                return true;
-            }
-            else if (component.equals(authwebjr)) {
-                String status = params[1].toString();
-                String textOfResponse = (String) params[3];
-                if (status.equals("200")) {
-                    try {
-                        JSONObject parser = new JSONObject(textOfResponse);
-                        if (parser.getString("status").equals("OK")) {
-                            String result = parser.getString("userid");
-                            if (Integer.parseInt(result) > 0) {
-                                PopUpAd.ShowAlert(UI_Responses.HAPPY_WOOHOO);
-                                errormsg.Text(UI_Responses.SUCCESS);
-                                tim2.TimerEnabled(true);
-                                return true;
-                            }
-                        }
-                    }
-                    catch (JSONException e) {
-                        return true;
-                    }
-                }
-            }
-        }
-        else if (eventName.equals("Timer")) {
-            if (component.equals(tim)) {
-                tim.TimerEnabled(false);
-                //finish();
-                //startActivity(getIntent());
-            }
-            if (component.equals(tim2)) {
-                tim2.TimerEnabled(false);
-                switchForm("MainActivity");
-            }
+                break;
         }
         return false;
     }

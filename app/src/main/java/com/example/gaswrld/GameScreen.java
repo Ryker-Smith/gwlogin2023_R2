@@ -20,7 +20,7 @@ public class GameScreen extends Form implements HandlesEventDispatching {
     VerticalArrangement Main, tableback;
     GrassViewer GrassViewer;
     TableArrangement Table;
-    String token, doitagain_key;
+    String doitagain_key;
     Clock doitagain;
     Label sleepwakeCheck;
     Notifier PopUpAd;

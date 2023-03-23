@@ -14,7 +14,7 @@ public class SplashScreen extends Form implements HandlesEventDispatching {
 
     Clock timerNextScreen;
     VerticalArrangement SplashScreen;
-    int another_Bad_Idea_SettingTheTimerThisWay = 500;
+    int another_Bad_Idea_SettingTheTimerThisWay = 1500;
 
     protected void $define() {
         this.Sizing("Responsive");
