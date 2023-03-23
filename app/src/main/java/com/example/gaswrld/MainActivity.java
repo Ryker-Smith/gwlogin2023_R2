@@ -161,7 +161,6 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                 }
                 if (pass.Text().length() < 5 ) {
                     PopUpAd.ShowChooseDialog("Enter correct password", "Alert", "Ok", "", false);
-                    return true;
                 }
                 else {
                     statsus.Text(UI_Responses.CONNECTION_SENDING);
@@ -177,8 +176,8 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                     } catch (Exception e) {
                         return false;
                     }
-                    return true;
                 }
+                return true;
             }
         }
         if (component.equals(buttonr)) {
