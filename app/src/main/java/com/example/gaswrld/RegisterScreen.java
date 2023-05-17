@@ -28,7 +28,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     TextBox email, nme;
     TableArrangement Table;
     Slider date;
-    PasswordTextBox pass;
+    PasswordTextBox pass, pass2;
     CheckBox box, boxl;
     Clock tim, tim2;
     Web authweb, authwebjr;
@@ -115,9 +115,17 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
         pass.Hint("My Password Here!");
         pass.TextAlignment(ALIGNMENT_CENTER);
 
+        pass2 = new PasswordTextBox(Table);
+        pass2.Column(1);
+        pass2.Row(9);
+        pass2.FontSize(20);
+        pass2.TextColor(COLOR_LTGRAY);
+        pass2.Hint("Confirm Password!");
+        pass2.TextAlignment(ALIGNMENT_CENTER);
+
         nme = new TextBox(Table);
         nme.Column(1);
-        nme.Row(9);
+        nme.Row(10);
         nme.FontSize(20);
         nme.TextColor(COLOR_LTGRAY);
         nme.Hint("My Name Here!");
@@ -125,28 +133,28 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
 
         box = new CheckBox(Table);
         box.Column(1);
-        box.Row(10);
+        box.Row(11);
         box.Text("I promise that the \ninfo provided is 100% \ntrue and accurate.");
         box.TextColor(COLOR_LTGRAY);
         box.FontSize(15);
 
         boxl = new CheckBox(Table);
         boxl.Column(1);
-        boxl.Row(11);
+        boxl.Row(12);
         boxl.Text("I allow for marketting and update\n news to be sent to my email\n every day for the next 50 years");
         boxl.TextColor(COLOR_LTGRAY);
         boxl.FontSize(15);
 
         padv3 = new VerticalArrangement(Table);
         padv3.Column(1);
-        padv3.Row(12);
+        padv3.Row(13);
         padv3.WidthPercent(10);
         padv3.HeightPercent(10);
         padv3.BackgroundColor(7);
 
         buttonr = new Button(Table);
         buttonr.Column(1);
-        buttonr.Row(14);
+        buttonr.Row(15);
         buttonr.Shape(BUTTON_SHAPE_ROUNDED);
         buttonr.BackgroundColor(COLOR_LTGRAY);
         buttonr.Text("Register!");
@@ -202,21 +210,31 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                         if (email.Text().contains("@")) {
                             if (email.Text().length() > 8) {
                                 if (pass.Text().length() > 6) {
-                                    errormsg.Text(UI_Responses.CHECKING);
-                                    if (BAP.isValidEmailAddress(email.Text())) {
-                                        try {
-                                            jsonCredentials.put("action", "validate");
-                                            jsonCredentials.put("user", email.Text());
-                                            System.err.print("Sending: " + jsonCredentials.toString());
-                                            String msg = jsonCredentials.toString();
-                                            authweb.PostText(msg);
-                                            errormsg.Text("Details have been sent!\nPlease wait a moment...");
-                                        } catch (Exception e) {
-                                            return false;
+                                    if(pass2.Text().equals(pass.Text())) {
+                                        if(nme.Text().length() > 2) {
+                                                errormsg.Text(UI_Responses.CHECKING);
+                                                if (BAP.isValidEmailAddress(email.Text())) {
+                                                    try {
+                                                        jsonCredentials.put("action", "validate");
+                                                        jsonCredentials.put("user", email.Text());
+                                                        System.err.print("Sending: " + jsonCredentials.toString());
+                                                        String msg = jsonCredentials.toString();
+                                                        authweb.PostText(msg);
+                                                        errormsg.Text("Details have been sent!\nPlease wait a moment...");
+                                                    } catch (Exception e) {
+                                                        return false;
+                                                    }
+                                                } else {
+                                                    PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
+                                                }
+                                            }else{
+                                            tim.TimerEnabled(true);
+                                            errormsg.Text("Please enter an account name!");
+                                            }
+                                        }else {
+                                            tim.TimerEnabled(true);
+                                            errormsg.Text("Passwords dont match!");
                                         }
-                                    } else {
-                                        PopUpAd.ShowAlert(UI_Responses.REGISTER_INVALID_EMAIL);
-                                    }
                                 } else {
                                     tim.TimerEnabled(true);
                                     errormsg.Text("Enter a more secure password!");

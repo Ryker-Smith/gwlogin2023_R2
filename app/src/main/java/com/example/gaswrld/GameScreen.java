@@ -15,7 +15,7 @@ import com.google.appinventor.components.runtime.Label;
 
 public class GameScreen extends Form implements HandlesEventDispatching {
     private
-    Button up, down, left, right, eat, berserk, bag, sleep, wake, explode, muv;
+    Button up, down, left, right, eat, berserk, Pickup, sleep, wake, Drop, muv;
     HorizontalArrangement padh;
     VerticalArrangement Main, tableback;
     GrassViewer GrassViewer;
@@ -134,15 +134,15 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         berserk.TextAlignment(ALIGNMENT_CENTER);
         berserk.FontSize(30);
 
-        bag = new Button(Table);
-        bag.Shape(BUTTON_SHAPE_OVAL);
-        bag.Column(3);
-        bag.Row(3);
-        bag.Width(60);
-        bag.Height(60);
-        bag.Text("\uD83D\uDCBC");
-        bag.TextAlignment(ALIGNMENT_CENTER);
-        bag.FontSize(30);
+        Pickup = new Button(Table);
+        Pickup.Shape(BUTTON_SHAPE_OVAL);
+        Pickup.Column(3);
+        Pickup.Row(3);
+        Pickup.Width(60);
+        Pickup.Height(60);
+        Pickup.Text("\uD83E\uDEF4");
+        Pickup.TextAlignment(ALIGNMENT_CENTER);
+        Pickup.FontSize(30);
 
         sleep = new Button(Table);
         sleep.Shape(BUTTON_SHAPE_OVAL);
@@ -164,15 +164,15 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         wake.TextAlignment(ALIGNMENT_CENTER);
         wake.FontSize(30);
 
-        explode = new Button(Table);
-        explode.Shape(BUTTON_SHAPE_OVAL);
-        explode.Column(1);
-        explode.Row(3);
-        explode.Width(60);
-        explode.Height(60);
-        explode.Text("\uD83E\uDDE8");
-        explode.TextAlignment(ALIGNMENT_CENTER);
-        explode.FontSize(30);
+        Drop = new Button(Table);
+        Drop.Shape(BUTTON_SHAPE_OVAL);
+        Drop.Column(1);
+        Drop.Row(3);
+        Drop.Width(60);
+        Drop.Height(60);
+        Drop.Text("\uD83E\uDEF3");
+        Drop.TextAlignment(ALIGNMENT_CENTER);
+        Drop.FontSize(30);
 
         muv = new Button(Table);
         muv.Shape(BUTTON_SHAPE_OVAL);
@@ -305,21 +305,20 @@ public class GameScreen extends Form implements HandlesEventDispatching {
                 doitagain.TimerEnabled(true);
                 return true;
             }
-            else if (component.equals(bag)) {
-                PopUpAd.ShowAlert("dis don't work yet, be patient!");
-                System.err.print("key_bag");
-                //doitagain_key="key_M";
-                //GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
-                //doitagain.TimerEnabled(true);
-                //return true;
+            else if (component.equals(Pickup)) {
+                System.err.print("key_Pickup");
+                doitagain_key="key_P";
+                GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                doitagain.TimerEnabled(true);
+                return true;
             }
-            else if (component.equals(explode)) {
-                PopUpAd.ShowAlert("KHAAAAA-BEEEEWM");
-                System.err.print("key_BOOMBA");
-                //doitagain_key="key_M";
-                //GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
-                //doitagain.TimerEnabled(true);
-                //return true;
+            else if (component.equals(Drop)) {
+                //PopUpAd.ShowAlert("KHAAAAA-BEEEEWM");
+                System.err.print("key_Drop");
+                doitagain_key="key_D";
+                GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                doitagain.TimerEnabled(true);
+                return true;
             }
         }
         else if (eventName.equals("TouchUp")) {
@@ -351,8 +350,8 @@ public class GameScreen extends Form implements HandlesEventDispatching {
 //                // invert te timer status
 //                //return true;
 //            }
-//            else if (component.equals(bag)) {
-//                System.err.print("bag");
+//            else if (component.equals(Pickup)) {
+//                System.err.print("Pickup");
 //                //GrassViewer.toGame(
 //                        //GrassViewer.as_JSON(new String[] {"type","key","keyCode","key_M"})
 //                //);

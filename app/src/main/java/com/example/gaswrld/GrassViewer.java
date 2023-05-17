@@ -1,8 +1,5 @@
 package com.example.gaswrld;
 
-
-//import static net.fachtnaroe.gwlogin2023_fr.bits.dbg;
-
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
