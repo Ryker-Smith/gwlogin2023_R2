@@ -190,7 +190,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
     }
 
     public boolean dispatchEvent(Component component, String componentName, String eventName, Object[] params) {
-        System.err.print("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
+        System.err.println("dispatchEvent: " + formName + " [" + component.toString() + "] [" + componentName + "] " + eventName);
         switch (eventName) {
             case "BackPressed":
                 //this would be a great place to do something useful
@@ -217,7 +217,7 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                                     try {
                                                         jsonCredentials.put("action", "validate");
                                                         jsonCredentials.put("user", email.Text());
-                                                        System.err.print("Sending: " + jsonCredentials.toString());
+                                                        System.err.println("Sending: " + jsonCredentials.toString());
                                                         String msg = jsonCredentials.toString();
                                                         authweb.PostText(msg);
                                                         errormsg.Text("Details have been sent!\nPlease wait a moment...");
@@ -255,20 +255,28 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                 break;
             case "GotText":
                 if (component.equals(authweb)) {
+                    System.err.println("is authweb");
                     String status = params[1].toString();
                     String textOfResponse = (String) params[3];
                     if (textOfResponse.equals("")) {
                         textOfResponse = status;
                     }
                     if (status.equals("200")) {
+                        System.err.println("z");
                         try {
+                            System.err.println("g");
+                            //System.err.println(textOfResponse);
                             JSONObject parser = new JSONObject(textOfResponse);
+                            System.err.println("b");
                             if (parser.getString("status").equals("OK")) {
+                                System.err.println("a");
                                 String result = parser.getString("user");
                                 if (result.contentEquals("exists")) {
                                     PopUpAd.ShowAlert(UI_Responses.REGISTER_USER_EXISTS);
-                                    errormsg.Text(UI_Responses.REGISTER);
+                                    errormsg.Text("User already exists, try logging in instead!");
+                                    tim2.TimerEnabled(true);
                                 } else {
+                                    System.err.println("c");
                                     //can create user
                                     try {
                                         jsonCredentials.put("action", "register");
@@ -276,11 +284,13 @@ public class RegisterScreen extends Form implements HandlesEventDispatching {
                                         jsonCredentials.put("password", pass.Text());
                                         jsonCredentials.put("fullname", nme.Text());
                                         jsonCredentials.put("yob", datenr.Text());
-                                        System.err.print("Registering: " + jsonCredentials.toString());
+                                        System.err.println("Registering: " + jsonCredentials.toString());
                                         String msg = jsonCredentials.toString();
                                         errormsg.Text(UI_Responses.WAITING);
                                         authweb.PostText(msg);
+                                        System.err.println("d");
                                     } catch (Exception e) {
+                                        errormsg.Text("error connecting3 " + status);
                                         return false;
                                     }
                                 }
