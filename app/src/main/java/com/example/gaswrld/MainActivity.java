@@ -216,7 +216,8 @@ public class MainActivity extends Form implements HandlesEventDispatching {
                     }
                 }
                 else {
-                    statsus.Text("error e182 processing response" + status);
+                    statsus.Text("This account dosent exit!");
+                    System.err.println("error e182 processing response" + status);
                     buttonl.Enabled(true);
                 }
             }

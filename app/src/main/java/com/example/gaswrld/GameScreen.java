@@ -15,7 +15,7 @@ import com.google.appinventor.components.runtime.Label;
 
 public class GameScreen extends Form implements HandlesEventDispatching {
     private
-    Button up, down, left, right, eat, berserk, Pickup, sleep, wake, Drop, muv;
+    Button up, down, left, right, eat, berserk, Pickup, sleep, wake, Drop, muv, Bag;
     HorizontalArrangement padh;
     VerticalArrangement Main, tableback;
     GrassViewer GrassViewer;
@@ -143,6 +143,16 @@ public class GameScreen extends Form implements HandlesEventDispatching {
         Pickup.Text("\uD83E\uDEF4");
         Pickup.TextAlignment(ALIGNMENT_CENTER);
         Pickup.FontSize(30);
+
+        Bag = new Button(Table);
+        Bag.Shape(BUTTON_SHAPE_OVAL);
+        Bag.Column(1);
+        Bag.Row(2);
+        Bag.Width(60);
+        Bag.Height(60);
+        Bag.Text("\uD83E\uDEF4");
+        Bag.TextAlignment(ALIGNMENT_CENTER);
+        Bag.FontSize(30);
 
         sleep = new Button(Table);
         sleep.Shape(BUTTON_SHAPE_OVAL);
@@ -301,6 +311,13 @@ public class GameScreen extends Form implements HandlesEventDispatching {
             else if (component.equals(wake)) {
                 System.err.print("key_wake");
                 doitagain_key="key_W";
+                GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
+                doitagain.TimerEnabled(true);
+                return true;
+            }
+            else if (component.equals(Bag)) {
+                System.err.print("key_bag");
+                doitagain_key="key_B";
                 GrassViewer.toGame(GrassViewer.as_JSON(new String[] {"type","key","keyCode",doitagain_key}));
                 doitagain.TimerEnabled(true);
                 return true;
